@@ -15,13 +15,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
 Route::controller(ApplicationController::class)->group(function () {
     Route::post('/requests/', 'store');
     Route::get('/requests/', 'index');
-    Route::put('/requests/{id}', '');
+    Route::put('/requests/{id}', 'update');
 });
 

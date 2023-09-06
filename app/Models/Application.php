@@ -9,10 +9,13 @@ class Application extends Model
 {
     use HasFactory;
 
+    public $timestamps = true;
     protected $fillable = [
         'name',
+        'state',
         'email',
         'message',
         'comment',
+        'created_at',
     ];
 }
