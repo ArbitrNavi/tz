@@ -38,7 +38,11 @@ class ApplicationController extends Controller
     }
     public function index()
     {
+        $data = Application::all();
 
+        return response([
+            "data" => $data
+        ]);
     }
 
     function getCurrentDateTime() {
