@@ -20,8 +20,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::controller(ApplicationController::class)->group(function () {
-    Route::get('/requests/', '');
+    Route::post('/requests/', 'store');
+    Route::get('/requests/', 'index');
     Route::put('/requests/{id}', '');
-    Route::post('/requests/', '');
 });
 

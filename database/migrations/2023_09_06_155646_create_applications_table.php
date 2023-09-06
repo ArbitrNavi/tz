@@ -1,11 +1,11 @@
 <?php
 
+use App\Helpers\StatusState;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -15,7 +15,10 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email');
-            $table->enum('status', ['Active', 'Resolved']);
+            $table->enum('status', [
+                    StatusState::Active->value,
+                    StatusState::Resolved->value
+                ])->default(StatusState::Active->value);
             $table->text('message');
             $table->text('comment')->nullable();
             $table->timestamps();
