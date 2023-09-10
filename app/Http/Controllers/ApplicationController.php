@@ -17,35 +17,42 @@ class ApplicationController extends Controller
         $application = Application::create($data);
 
         return response([
-           'data' => $application
+            'data' => $application
         ]);
     }
+
     public function update(Request $request, $id)
     {
         $data = $request->all();
 
         /** @var Application $application */
         $application = Application::where('id', $id)
-                        ->update([
-                            'comment' => $data['comment'],
-                            'status' => StatusState::Resolved,
-                            'updated_at' => $this->getCurrentDateTime() // Я знаю что есть какой-то метод touch который типо отмечает обновления но он у меня не заработал и я не могу понять почему, поэтому мне нужен более опытный программист который будет давать по шее за такие моменты
-                        ]);
+            ->update([
+                'comment' => $data['comment'],
+                'status' => StatusState::Resolved,
+                'updated_at' => $this->getCurrentDateTime() // Я знаю что есть какой-то метод touch который типо отмечает обновления но он у меня не заработал и я не могу понять почему, поэтому мне нужен более опытный программист который будет давать по шее за такие моменты
+            ]);
 
         return response([
             'application' => $application
         ]);
     }
-    public function index()
-    {
-        $data = Application::all();
 
-        return response([
-            "data" => $data
-        ]);
+    public function index($status = null)
+    {
+        $requests = Application::query();
+
+        if ($status) {
+            $requests->where('status', $status);
+        }
+
+        $requests = $requests->get();
+
+        return response($requests);
     }
 
-    function getCurrentDateTime() {
+    function getCurrentDateTime()
+    {
         $currentDateTime = new DateTime();
         return $currentDateTime->format('Y-m-d H:i:s');
     }

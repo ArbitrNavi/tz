@@ -12,7 +12,7 @@ class Application extends Model
     public $timestamps = true;
     protected $fillable = [
         'name',
-        'state',
+        'status',
         'email',
         'message',
         'comment',

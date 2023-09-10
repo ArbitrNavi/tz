@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::controller(ApplicationController::class)->group(function () {
     Route::post('/requests/', 'store');
-    Route::get('/requests/', 'index');
+    Route::get('/requests/{status?}', 'index');
     Route::put('/requests/{id}', 'update');
 });
 
