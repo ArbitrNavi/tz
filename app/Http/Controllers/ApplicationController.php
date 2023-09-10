@@ -7,6 +7,8 @@ use App\Http\Requests\ApplicationCreateRequest;
 use App\Models\Application;
 use DateTime;
 use Illuminate\Http\Request;
+use Illuminate\Mail\Mailable;
+use Illuminate\Support\Facades\Mail;
 
 class ApplicationController extends Controller
 {
@@ -26,16 +28,22 @@ class ApplicationController extends Controller
         $data = $request->all();
 
         /** @var Application $application */
-        $application = Application::where('id', $id)
-            ->update([
+        $application = Application::where('id', $id)->first();
+
+        if ($application) {
+            $application->update([
                 'comment' => $data['comment'],
                 'status' => StatusState::Resolved,
-                'updated_at' => $this->getCurrentDateTime() // Я знаю что есть какой-то метод touch который типо отмечает обновления но он у меня не заработал и я не могу понять почему, поэтому мне нужен более опытный программист который будет давать по шее за такие моменты
             ]);
 
-        return response([
-            'application' => $application
-        ]);
+            $application->touch();
+
+            MailController::send($application->email, $application->name, $data['comment']);
+
+            return response()->json(['message' => 'Заявка успешно обновлена']);
+        } else {
+            return response()->json(['message' => 'Заявка не найдена'], 404);
+        }
     }
 
     public function index($status = null)
