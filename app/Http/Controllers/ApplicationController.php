@@ -7,8 +7,6 @@ use App\Http\Requests\ApplicationCreateRequest;
 use App\Models\Application;
 use DateTime;
 use Illuminate\Http\Request;
-use Illuminate\Mail\Mailable;
-use Illuminate\Support\Facades\Mail;
 
 class ApplicationController extends Controller
 {
@@ -57,11 +55,5 @@ class ApplicationController extends Controller
         $requests = $requests->get();
 
         return response($requests);
-    }
-
-    function getCurrentDateTime()
-    {
-        $currentDateTime = new DateTime();
-        return $currentDateTime->format('Y-m-d H:i:s');
     }
 }

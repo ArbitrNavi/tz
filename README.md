@@ -1,66 +1,124 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Документация для `ApplicationController`
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Методы Контроллера
 
-## About Laravel
+### Метод: `store`
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+**Описание:** Метод `store` принимает POST-запрос для создания новой заявки.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+**Параметры запроса:**
+- `ApplicationCreateRequest $request` - объект запроса, содержащий данные о новой заявке.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+**Ответ:**
+- В случае успешного создания заявки, метод возвращает JSON-ответ с данными созданной заявки.
 
-## Learning Laravel
+### Метод: `update`
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+**Описание:** Метод `update` обрабатывает PUT-запрос для обновления существующей заявки.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+**Параметры запроса:**
+- `Request $request` - объект запроса, содержащий данные об обновлении заявки.
+- `$id` - уникальный идентификатор заявки, которую необходимо обновить.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+**Ответ:**
+- В случае успешного обновления заявки, метод возвращает JSON-ответ с сообщением "Заявка успешно обновлена".
 
-## Laravel Sponsors
+### Метод: `index`
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+**Описание:** Метод `index` обрабатывает GET-запрос для получения списка заявок.
 
-### Premium Partners
+**Параметры запроса:**
+- `$status` (необязательный) - статус заявок, по которому необходимо фильтровать список. Если не указан, возвращаются все заявки.
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+**Ответ:**
+- Метод возвращает JSON-ответ со списком заявок, соответствующих заданному статусу (если указан) или всех заявок (если не указан).
 
-## Contributing
+## Пример использования
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Создание новой заявки
 
-## Code of Conduct
+```http request
+POST /api/requests
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+{
+    "name": "Иван",
+    "email": "ivan@example.com",
+    "status": "Active",
+    "message": "Прошу рассмотреть мою заявку."
+}
 
-## Security Vulnerabilities
+Ответ
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+{
+    "data": {
+        "id": 1,
+        "name": "Иван",
+        "email": "ivan@example.com",
+        "status": "Active",
+        "message": "Прошу рассмотреть мою заявку.",
+        "created_at": "2023-09-05 10:00:00",
+        "updated_at": "2023-09-05 10:00:00"
+    }
+}
 
-## License
+``` 
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+```http request
+PUT /api/requests/1
+
+{
+    "comment": "Заявка рассмотрена и принята."
+}
+
+Ответ
+
+{
+    "message": "Заявка успешно обновлена"
+}
+```
+
+```http request
+GET /api/requests
+
+[
+    {
+        "id": 1,
+        "name": "Иван",
+        "email": "ivan@example.com",
+        "status": "Active",
+        "message": "Прошу рассмотреть мою заявку.",
+        "created_at": "2023-09-05 10:00:00",
+        "updated_at": "2023-09-05 10:00:00"
+    },
+    {
+        "id": 2,
+        "name": "Мария",
+        "email": "maria@example.com",
+        "status": "Resolved",
+        "message": "Заявка рассмотрена и принята.",
+        "created_at": "2023-09-05 10:30:00",
+        "updated_at": "2023-09-05 10:35:00"
+    }
+]
+
+Для фильтрации заявок
+GET /api/requests/active|resolved
+
+
+[
+    {
+        "id": 1,
+        "name": "Иван",
+        "email": "ivan@example.com",
+        "status": "active|resolved",
+        "message": "Прошу рассмотреть мою заявку.",
+        "created_at": "2023-09-05 10:00:00",
+        "updated_at": "2023-09-05 10:00:00"
+    },
+]
+```
+
+
+
+
+
