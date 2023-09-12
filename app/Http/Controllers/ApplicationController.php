@@ -2,42 +2,31 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\StatusState;
 use App\Http\Requests\ApplicationCreateRequest;
-use App\Models\Application;
-use DateTime;
-use Illuminate\Http\Request;
+use App\Http\Requests\ApplicationUpdateRequest;
+use App\Services\ApplicationService;
 
 class ApplicationController extends Controller
 {
+    private ApplicationService $applicationService;
+
+    public function __construct(ApplicationService $applicationService)
+    {
+        $this->applicationService = $applicationService;
+    }
+
     public function store(ApplicationCreateRequest $request)
     {
-        $data = $request->validated();
-
-        $application = Application::create($data);
+        $application = $this->applicationService->createApplication($request->validated());
 
         return response([
             'data' => $application
         ]);
     }
 
-    public function update(Request $request, $id)
+    public function update(ApplicationUpdateRequest $request, $id)
     {
-        $data = $request->all();
-
-        /** @var Application $application */
-        $application = Application::where('id', $id)->first();
-
-        if ($application) {
-            $application->update([
-                'comment' => $data['comment'],
-                'status' => StatusState::Resolved,
-            ]);
-
-            $application->touch();
-
-            MailController::send($application->email, $application->name, $data['comment']);
-
+        if ($this->applicationService->responseApplication($request, $id)) {
             return response()->json(['message' => 'Заявка успешно обновлена']);
         } else {
             return response()->json(['message' => 'Заявка не найдена'], 404);
@@ -46,14 +35,8 @@ class ApplicationController extends Controller
 
     public function index($status = null)
     {
-        $requests = Application::query();
-
-        if ($status) {
-            $requests->where('status', $status);
-        }
-
-        $requests = $requests->get();
-
-        return response($requests);
+        return response([
+            'data' => $this->applicationService->getApplications($status),
+        ]);
     }
 }
